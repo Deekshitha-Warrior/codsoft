@@ -1,0 +1,21 @@
+tasks = []
+
+def add_task(task):
+    tasks.append(task)
+    print(f'Task "{task}" added.')
+
+def list_tasks():
+    for idx, task in enumerate(tasks):
+        print(f"{idx + 1}. {task}")
+
+while True:
+    command = input("Enter a command (add/list/exit): ").strip().lower()
+    if command == "add":
+        task = input("Enter the task: ")
+        add_task(task)
+    elif command == "list":
+        list_tasks()
+    elif command == "exit":
+        break
+    else:
+        print("Unknown command.")
