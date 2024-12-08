@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Quiz Maker</title>
+  <style>
+    /* Add your custom CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .quiz-container {
+      display: none;
+    }
+    
+    .question {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    .options li {
+      margin-bottom: 5px;
+    }
+    
+    .result {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Online Quiz Maker</h1>
+    <div class="home-page">
+      <h2>Welcome to the Online Quiz Maker</h2>
+      <button id="create-quiz">Create a Quiz</button>
+      <button id="take-quiz">Take a Quiz</button>
+    </div>
+    
+    <div class="quiz-container">
+      <h2>Create a New Quiz</h2>
+      <form id="quiz-form">
+        <div class="question-container">
+          <label for="question">Question:</label>
+          <input type="text" id="question" name="question" required>
+          <label for="option1">Option 1:</label>
+          <input type="text" id="option1" name="option1" required>
+          <label for="option2">Option 2:</label>
+          <input type="text" id="option2" name="option2" required>
+          <label for="option3">Option 3:</label>
+          <input type="text" id="option3" name="option3" required>
+          <label for="option4">Option 4:</label>
+          <input type="text" id="option4" name="option4" required>
+          <label for="correct-answer">Correct Answer:</label>
+          <input type="number" id="correct-answer" name="correct-answer" min="1" max="4" required>
+        </div>
+        <button type="submit">Save Quiz</button>
+      </form>
+    </div>
+    
+    <div class="quiz-container">
+      <h2>Take a Quiz</h2>
+      <div id="quiz-display">
+        <div class="question">
+          <span id="question-text"></span>
+        </div>
+        <ul class="options">
+          <li><input type="radio" name="answer" value="1"><span id="option1-text"></span></li>
+          <li><input type="radio" name="answer" value="2"><span id="option2-text"></span></li>
+          <li><input type="radio" name="answer" value="3"><span id="option3-text"></span></li>
+          <li><input type="radio" name="answer" value="4"><span id="option4-text"></span></li>
+        </ul>
+        <button id="submit-answer">Submit</button>
+      </div>
+      <div class="result">
+        <h3>Your Score:</h3>
+        <p id="score"></p>
+        <p id="correct-answers"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add your JavaScript logic here
+    const createQuizButton = document.getElementById('create-quiz');
+    const takeQuizButton = document.getElementById('take-quiz');
+    const quizForm = document.getElementById('quiz-form');
+    const quizDisplay = document.getElementById('quiz-display');
+    const submitAnswerButton = document.getElementById('submit-answer');
+    const scoreDisplay = document.getElementById('score');
+    const correctAnswersDisplay = document.getElementById('correct-answers');
+
+    let currentQuestionIndex = 0;
+    let totalScore = 0;
+    let correctAnswers = 0;
+    let quizData = [];
+
+    createQuizButton.addEventListener('click', () => {
+      document.querySelector('.home-page').style.display = 'none';
+      document.querySelectorAll('.quiz-container')[0].style.display = 'block';
+    });
+
+    takeQuizButton.addEventListener('click', () => {
+      document.querySelector('.home-page').style.display = 'none';
+      document.querySelectorAll('.quiz-container')[1].style.display = 'block';
+      displayQuizQuestion();
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const question = document.getElementById('question').value;
+      const options = [
+        document.getElementById('option1').value,
+        document.getElementById('option2').value,
+        document.getElementById('option3').value,
+        document.getElementById('option4').value,
+      ];
+      const correctAnswer = parseInt(document.getElementById('correct-answer').value);
+      quizData.push({ question, options, correctAnswer });
+      quizForm.reset();
+    });
+
+    submitAnswerButton.addEventListener('click', () => {
+      const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+      if (selectedAnswer) {
+        const userAnswer = parseInt(selectedAnswer.value);
+        const correctAnswer = quizData[currentQuestionIndex].correctAnswer;
+        if (userAnswer === correctAnswer) {
+          totalScore++;
+          correctAnswers++;
+        }
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+          displayQuizQuestion();
+        } else {
+          scoreDisplay.textContent = `Your score: ${totalScore}/${quizData.length}`;
+          correctAnswersDisplay.textContent = `Correct answers: ${correctAnswers}/${quizData.length}`;
+          quizDisplay.style.display = 'none';
+          document.querySelector('.result').style.display = 'block';
+        }
+      }
+    });
+
+    function displayQuizQuestion() {
+      const currentQuestion = quizData[currentQuestionIndex];
+      document.getElementById('question-text').textContent = currentQuestion.question;
+      document.getElementById('option1-text').textContent = currentQuestion.options[0];
+      document.getElementById('option2-text').textContent = currentQuestion.options[1];
+      document.getElementById('option3-text').textContent = currentQuestion.options[2];
+      document.getElementById('option4-text').textContent = currentQuestion.options[3];
+    }
+  </script>
+</body>
+</html>
